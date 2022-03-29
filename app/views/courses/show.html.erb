@@ -1,0 +1,392 @@
+<% content_for :meta_title, "#{@course.title} is on #{DEFAULT_META["meta_product_name"]}" %>
+<% content_for :meta_description, @course.category %>
+<% content_for :meta_image, cl_image_path(@course.photo.key) %>
+
+<div class="container show-container">
+  <div class="card-show">
+    <div class="card-show-title">
+      <h3><%= @course.title %></h3>
+      <% if @course.end_at > Time.now && !@course.in?(current_user.courses_as_participant) %>
+        <div class="booking-btn">
+          <button class="button" data-bs-toggle="modal" data-bs-target="#bookingModal">Réserver ce cours</button>
+        </div>
+      <% end %>
+    </div>
+
+    <div class="row">
+      <div class="d-flex justify-content-between col-6">
+        <p><strong> Date du cours : <%= l(@course.start_at, format: "%A %d %B %Y, %Hh%M") %></strong></p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-6">
+        <% if @course.end_at < Time.now  %>
+          <div class="carre-video">
+            <%= video_tag "foodclass.mp4", controls: true %>
+            <%# <i class="fa-regular fa-circle-play"></i> %>
+          </div>
+        <% else %>
+          <%= cl_image_tag @course.photo.key %>
+        <% end %>
+
+        <% if  (Time.now > (@course.start_at - 10.minutes) && Time.now < (@course.end_at))   %>
+          <div class="live-btn">
+            <button class="button">Accès au cours<span class="live-icon"></span></button>
+          </div>
+        <% end %>
+      </div>
+      <div class="col-6 show-right">
+        <div class="card-show-infos">
+          <div class="card-infos-titles">
+            <div>
+              <div class="chef-detail">
+                <h3 class="chef">Chef·fe <%= @course.chef.user.first_name %> <%= @course.chef.user.last_name %></h3>
+              </div>
+              <p>Temps de réalisation : <%= @course.duration %> minutes</p>
+              <%# <p>Matériel nécessaire :</p> %>
+              <p>Difficulté : <%= @course.difficulty %></p>
+              <p>Nombre de <i class="fas fa-carrot"></i> : <%= @course.level_points %></p>
+              <p>Nombre de participants : <%= @course.total_participations %></p>
+            </div>
+            <div class="main-checkbox <%="past_courses" if @course.end_at < Time.now %>">
+              <h3>Ingrédients</h3>
+              <div class="card-show-infos">
+                <p>Pour 2 personnes :</p>
+              </div>
+
+              <div class="detail-checkbox">
+                <div class="bobox">
+                  <input type="checkbox" id="Homard" name="Homard">
+                  <label for="Homard"><strong>1 </strong>homard</label>
+                </div>
+                <div class="bobox">
+                  <input type="checkbox" id="Beurre" name="Beurre">
+                  <label for="Beurre"><strong>50g </strong>beurre</label>
+                </div>
+                <div class="bobox">
+                  <input type="checkbox" id="echalotes" name="echalotes">
+                  <label for="echalotes"><strong>3 </strong>échalotes</label>
+                </div>
+                <div class="bobox">
+                  <input type="checkbox" id="Vin" name="Vin">
+                  <label for="Vin"><strong>10cl </strong>vin blanc</label>
+                </div>
+                <div class="bobox">
+                  <input type="checkbox" id="thym" name="thym">
+                  <label for="thym"><strong>2 </strong>branches de thym</label>
+                </div>
+                <div class="bobox">
+                  <input type="checkbox" id="creme" name="creme">
+                  <label for="creme"><strong>20cl </strong>crème fraiche liquide entière</label>
+                </div>
+                <div class="bobox">
+                  <input type="checkbox" id="aneth" name="aneth">
+                  <label for="aneth"><strong>2 cuil. à soupe </strong>Feuilles d'aneth</label>
+
+              <!-- Début de personnalisation des ingrédients pour la démo (Tajine vs Homard) -->
+              <% if @course == Course.find_by(title: "Tajine d'agneau") %>
+                <div class="detail-checkbox">
+                  <div class="bobox">
+                    <input type="checkbox" id="Pruneau" name="Pruneau">
+                    <label for="Pruneau"><strong>500g </strong>pruneau</label>
+                  </div>
+                  <div class="bobox">
+                    <input type="checkbox" id="Agneau" name="Agneau">
+                    <label for="Agneau"><strong>1,5kg </strong>épaule d'agneau</label>
+                  </div>
+                  <div class="bobox">
+                    <input type="checkbox" id="Oignon" name="Oignon">
+                    <label for="Oignon"><strong>500g </strong>d'oignon</label>
+                  </div>
+                  <div class="bobox">
+                    <input type="checkbox" id="Huile" name="Huile">
+                    <label for="Huile"><strong>30cl </strong>huile d'olive</label>
+                  </div>
+                  <div class="bobox">
+                    <input type="checkbox" id="Coriandre" name="Coriandre">
+                    <label for="Coriandre"><strong>5 </strong>branches de coriandre</label>
+                  </div>
+                  <div class="bobox">
+                    <input type="checkbox" id="Miel" name="Miel">
+                    <label for="Miel"><strong>3 c.à.s </strong>miel</label>
+                  </div>
+                  <div class="bobox">
+                    <input type="checkbox" id="Ail" name="Ail">
+                    <label for="Ail"><strong>2 gousses </strong>d'ail</label>
+                  </div>
+                  <div class="bobox">
+                    <input type="checkbox" id="Cannelle" name="Cannelle">
+                    <label for="Cannelle"><strong>1/2 c.à.s </strong>cannelle</label>
+                  </div>
+
+                </div>
+              <% else %>
+              <!-- Fin de Personnalisation des ingrédients pour la démo (Tajine vs Homard) -->
+                <div class="detail-checkbox">
+                  <div class="bobox">
+                    <input type="checkbox" id="Homard" name="Homard">
+                    <label for="Homard"><strong>1 </strong>homard</label>
+                  </div>
+                  <div class="bobox">
+                    <input type="checkbox" id="Beurre" name="Beurre">
+                    <label for="Beurre"><strong>50g </strong>beurre</label>
+                  </div>
+                  <div class="bobox">
+                    <input type="checkbox" id="echalotes" name="echalotes">
+                    <label for="echalotes"><strong>3 </strong>échalotes</label>
+                  </div>
+                  <div class="bobox">
+                    <input type="checkbox" id="Vin" name="Vin">
+                    <label for="Vin"><strong>10cl </strong>vin</label>
+                  </div>
+                  <div class="bobox">
+                    <input type="checkbox" id="thym" name="thym">
+                    <label for="thym"><strong>2 </strong>branches de thym</label>
+                  </div>
+                  <div class="bobox">
+                    <input type="checkbox" id="creme" name="creme">
+                    <label for="creme"><strong>20cl </strong>crème fraiche liquide entière</label>
+                  </div>
+                  <div class="bobox">
+                    <input type="checkbox" id="aneth" name="aneth">
+                    <label for="aneth"><strong>2 cuil. à soupe </strong>Feuilles d'aneth</label>
+                  </div>
+                  <div class="bobox">
+                    <input type="checkbox" id="cib" name="cib">
+                    <label for="cib">Ciboulette fraiche</label>
+                  </div>
+                </div>
+                <!-- Fermeture if else à supprimer après démo -->
+              <% end %>
+                <!-- Fermeture if else à supprimer après démo -->
+            </div>
+          </div>
+          <div id="img-chef">
+            <%= image_tag @course.chef.user.photo, class: "avatar-large" %>
+          </div>
+        </div>
+        <% if Time.now < @course.start_at %>
+          <div class="show-btn">
+            <button class="button" data-bs-toggle="modal" data-bs-target="#epiceryModal">Commander chez Epicery</button>
+            <button class="button" data-bs-toggle="modal" data-bs-target="#emailModal">M'envoyer la liste</button>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+            <!-- Modal Cours réservé-->
+            <div class="modal fade" id="bookingModal" tabindex="-1" aria-labelledby="bookingModalLabel" aria-hidden="true">
+              <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="bookingModalLabel">Détails de votre réservation</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+                    <div>
+                      <p><strong> Date du cours : <%= l(@course.start_at, format: "%A %d %B %Y, %Hh%M") %></strong></p>
+                      <p><strong>Chef·fe : <%= @course.chef.user.first_name %> <%= @course.chef.user.last_name %></strong></p>
+                      <p><strong>Temps de réalisation : <%= @course.duration %> minutes</strong></p>
+                      <p><strong>Difficulté : <%= @course.difficulty %></strong></p>
+                    </div>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="button" data-bs-toggle="modal" data-bs-target="#confirmationBookingModal">Confirmer</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="modal fade" id="confirmationBookingModal" aria-hidden="true" aria-labelledby="bookingModalToggleLabel2" tabindex="-1">
+              <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="bookingModalToggleLabel2">Réservation confirmée !</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+                    Votre réservation a bien été prise en compte. Merci !
+                    <br>
+                    Vous allez recevoir un email avec le récapitulatif du cours et un lien pour vous connecter à la diffusion.
+                  </div>
+                  <div class="modal-footer">
+                    <button class="button" data-bs-target="#bookingModalToggle" data-bs-dismiss="modal">Fermer</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+
+
+            <!-- Modal Epicery-->
+            <div class="modal fade" id="epiceryModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+              <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Commander chez Epicery</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+                    <div>
+                      <label for="start">Me faire livrer le :</label>
+                      <input type="date" id="start" name="start">
+                    </div>
+                    <%# <div> %>
+                      <%# <label for="flatpicker"><i class="fa-solid fa-calendar"></i></label> %>
+                      <%# <input class="datepicker" id="flatpicker" dateFormat="d-m-Y H:i"> %>
+
+                      <%#= simple_form_for :search, method: "get" do |f| %>
+                        <%#= f.input :"Me livrer le", as: :string, required: true, input_html: {
+                          class: "datepicker",
+                          minDate: "today",
+                          enableTime: true,
+                          dateFormat: "d-m-Y H:i",
+                          } %>
+                          <%#= f.button :submit, "Go", class: "btn btn-primary" %>
+                      <%# end %>
+                    <%# </div> %>
+                    <div class="modal-footer">
+                        <button type="button" class="button" data-bs-toggle="modal" data-bs-target="#confirmationModal">Commander</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="modal fade" id="confirmationModal" aria-hidden="true" aria-labelledby="exampleModalToggleLabel2" tabindex="-1">
+              <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalToggleLabel2">Commande confirmée !</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+                    Votre commande a bien été prise en compte par Epicery. Merci !
+                  </div>
+                  <div class="modal-footer">
+                    <button class="button" data-bs-target="#exampleModalToggle" data-bs-dismiss="modal">Fermer</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+           <!-- Modal Email-->
+            <div class="modal fade" id="emailModal" tabindex="-1" aria-labelledby="emailModalLabel" aria-hidden="true">
+              <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="emailModalLabel">Bien envoyée !</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+                    <div>
+                      <p>La liste de course est dans votre boîte mail !</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+  <% if @course.end_at < Time.now  %>
+    <div class="show-posts">
+      <h3>Posts de la communauté pour ce cours </h3>
+      <div>
+        <div class="form-collapse" data-controller="insert-posts" data-action="submit->insert-posts#posted">
+          <%= simple_form_for [@course, @post] do |f| %>
+            <p>
+              <a data-bs-toggle="collapse" href="#collapseForm" role="button" aria-expanded="false" aria-controls="collapseExample">
+                <%= f.submit "Partager un post !", class: "button-small-post"%>
+              </a>
+            </p>
+            <div class="collapse container-form" id="collapseForm">
+              <span><%= f.input :content, class: "form-white", label: false, placeholder: "Partager un post ici" %></span>
+              <div class="d-flex" style="align-items: flex-start;">
+                <div class="card-new-form">
+                </div>
+                <div class="card-new-form" >
+                  <%= f.input :photo, label: false, as: :file %>
+                </div>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+    <br>
+    <% @course.posts.each do |post| %>
+      <div class="card-show-post">
+        <div class="d-flex" style="align-items: flex-start;">
+          <%= image_tag post.participation.user.photo, class: "avatar-large mx-3" %>
+          <div class="card-community-title">
+            <p><span class="community-user-nickname"><%= post.participation.user.nickname %></span>
+              a commenté la recette
+              <span><%= link_to post.course.title, course_path(post.course) %></span> par
+              <%= post.course.chef.user.first_name %>
+              <%= post.course.chef.user.last_name %>
+            </p>
+            <p><%= l(post.posted_at, format: "%A %d %B %Y, %Hh%M") %></p>
+          </div>
+        </div>
+        <div class="d-flex card-community-margin">
+          <div class="main-img">
+            <%= cl_image_tag(post.photo.key, style: "width: 350px; height: 200px; object-fit:cover") %>
+          </div>
+          <div class="card-community-description">
+            <p>
+              <%= post.content %>
+            </p>
+            <br>
+          </div>
+        </div>
+        <div class="card-community-margin d-flex wrapper-emojis-comment" style="justify-content: space-between">
+          <div class="d-flex" data-controller="emojis">
+            <div>
+              <% post.emojis_counters.each do |emoji, counter| %>
+                <span class="mr-1">
+                  <span><%= emoji %></span>
+                  <span><%= counter %></span>
+                </span>
+              <% end %>
+            </div>
+            <div class="emojis-dropdown">
+              <%= simple_form_for [post, Emoji.new], html: {'data-emojis-target': "form"} do |f| %>
+                <%= f.input :content, collection: Emoji::EMOJIS, label: false, input_html: {'data-action': "change->emojis#submit"}, prompt: "" %>
+              <% end %>
+            </div>
+          </div>
+          <p>
+            <a class="text-comments" data-bs-toggle="collapse" href="#collapseShow" role="button" aria-expanded="false" aria-controls="collapseExample">
+              <%= pluralize(post.comments.count,"commentaire", "commentaires") %>
+            </a>
+          </p>
+        </div>
+        <div class="card-community-container">
+          <div class="collapse" id="collapseShow">
+            <% post.comments.each do |comment| %>
+              <div class="card-community-comments">
+                <div class="d-flex">
+                  <%= image_tag comment.user.photo, class: "avatar-large" %>
+                  <div class="post-comment-content">
+                    <p><%= comment.content %></p>
+                  </div>
+                  <div class="button-delete-comment">
+                    <%= link_to post_comment_path(post, comment), method: :delete  do %>
+                      <%= image_tag("cancel.png") %>
+                    <% end %>
+                  </div>
+                </div>
+              </div>
+            <% end %>
+            <div class="container-show-form">
+              <%= simple_form_for [post, comment = Comment.new] do |f| %>
+                <%= f.input :content, label: false %>
+                <%= f.submit "Commenter", class: "button-small"%>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  <% end %>
+</div>

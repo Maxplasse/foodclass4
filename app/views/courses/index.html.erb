@@ -1,0 +1,29 @@
+<div class="dashboard-navigation" data-controller="search-courses">
+  <div class="container">
+    <div class="searchbar">
+      <h3 style="padding-top: 2em">Retrouvez ici la liste de tous les cours proposés par nos Chefs!</h3>
+      <br>
+      <div class="d-flex justify-content-between">
+        <div style="width: 100%">
+          <div >
+            <%= form_with url: courses_path, method: :get, html: { class:
+              'mb-4', data: { search_courses_target: 'form' } } do |f| %>
+              <%= f.text_field :query,
+                class: "form-control",
+                placeholder: 'Trouver un cours, un chef, etc',
+                style: "height: 50px",
+                value: params[:query],
+                data: { search_courses_target: 'input',
+                action: 'keyup->search-courses#update'} %>
+          </div>
+        </div>
+        <div style="padding-left: 4px">
+          <%= submit_tag "Rechercher", class: "button" %>
+        </div>
+        <% end %>
+      </div>
+    </div>
+    <br>
+    <%= render 'list' %>
+  </div>
+</div>

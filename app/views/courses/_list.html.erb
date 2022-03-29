@@ -1,0 +1,28 @@
+<div data-search-courses-target="list">
+  <% if @courses == [] %>
+    Pas de résultat pour cette recherche.
+   <br>
+    Peut-être une nouvelle recette à inventer ?
+
+  <% else %>
+    <div class="cards">
+      <% @courses.each do |course| %>
+        <div class="card-course">
+          <%= link_to course_path(course) do %>
+            <%= cl_image_tag course.photo.key %>
+            <% if course.end_at > Time.now  %>
+              <button class="booking-button">Réserver</button>
+            <% end %>
+          <% end %>
+          <div class="card-course-infos">
+            <div>
+              <h2><%= course.title %></h2>
+              <p>Chef <%= course.chef.user.first_name %> <%= course.chef.user.last_name %></p>
+              <p>Temps de réalisation : <%= course.duration %> minutes</p>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+</div>

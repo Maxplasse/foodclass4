@@ -25,6 +25,9 @@ gem 'jbuilder', '~> 2.7'
 # devise for user authentification
 gem 'devise'
 
+# user authorization
+gem 'pundit'
+
 gem 'cloudinary', '~> 1.16.0'
 
 # for multisearch bar
